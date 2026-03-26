@@ -152,11 +152,35 @@ o.undolevels = 1000
 o.undoreload = 10000
 
 -- fold
-o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-o.foldmethod = "expr"
-o.foldlevel = 99
-o.foldnestmax = 10
-o.foldtext = ""
+-- o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- o.foldmethod = "expr"
+-- o.foldlevel = 99
+-- o.foldnestmax = 10
+-- o.foldtext = ""
+
+-- Only set non-triggering globals here
+vim.opt.foldlevel = 99
+vim.opt.foldtext = ""
+
+-- Wrap triggering options in a protected autocommand
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = vim.api.nvim_create_augroup("UserFoldConfig", { clear = true }),
+  callback = function()
+    -- Only apply if the buffer is valid and NOT a special/plugin window
+    if vim.bo.buftype == "" then
+      vim.opt_local.foldnestmax = 10
+      
+      -- Only enable TS folding if a parser actually exists
+      local ok, _ = pcall(vim.treesitter.get_parser, 0)
+      if ok then
+        vim.opt_local.foldmethod = "expr"
+        vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+      else
+        vim.opt_local.foldmethod = "indent"
+      end
+    end
+  end,
+})
 
 -- Disable builtin plugins
 local disabled_built_ins = {
@@ -193,7 +217,7 @@ end
 
 -- Colorscheme
 -- By default, use rose-pine
-cmd.colorscheme("rose-pine")
+cmd.colorscheme("tokyonight")
 
 -- Enable virtual_lines feature if the current nvim version is 0.11+
 if vim.fn.has("nvim-0.11") > 0 then

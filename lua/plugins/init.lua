@@ -24,6 +24,25 @@ local builtin_plugins = {
             MiniMisc.setup_termbg_sync()
         end,
     },
+    -- colorscheme
+    {
+        "folke/tokyonight.nvim",
+        lazy = false,
+        priority = 1000,
+        opts = {},
+    },
+    -- Treesitter interface
+    {
+        "nvim-treesitter/nvim-treesitter",
+        lazy = false,
+        version = false, -- last release is way too old and doesn't work on Windows
+        event = { "BufReadPost", "BufNewFile", "BufWritePost" },
+        cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+        build = ":TSUpdate",
+        opts = function()
+            return require("plugins.configs.treesitter")
+        end,
+    },
     -- File explore
     -- mini.files
     {
@@ -110,17 +129,6 @@ local builtin_plugins = {
             return require("plugins.configs.gitsigns")
         end,
     },
-    -- Treesitter interface
-    {
-        "nvim-treesitter/nvim-treesitter",
-        version = false, -- last release is way too old and doesn't work on Windows
-        event = { "BufReadPost", "BufNewFile", "BufWritePost" },
-        cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
-        build = ":TSUpdate",
-        opts = function()
-            return require("plugins.configs.treesitter")
-        end,
-    },
     -- Telescope
     -- Find, Filter, Preview, Pick. All lua, all the time.
     {
@@ -142,6 +150,17 @@ local builtin_plugins = {
             require("plugins.configs.telescope")
         end,
     },
+    {
+        "nvim-tree/nvim-tree.lua",
+        lazy = false,
+
+
+        -- empty setup using defaults
+        config = function(_)
+
+            require("nvim-tree").setup()
+        end,
+    },
     -- Statusline
     -- A blazing fast and easy to configure neovim statusline plugin written in pure lua.
     {
@@ -149,15 +168,6 @@ local builtin_plugins = {
         opts = function()
             return require("plugins.configs.lualine")
         end,
-    },
-    -- colorscheme
-    {
-        -- Rose-pine - Soho vibes for Neovim
-        "rose-pine/neovim",
-        name = "rose-pine",
-        opts = {
-            dark_variant = "main",
-        },
     },
     -- LSP stuffs
     -- Portable package manager for Neovim that runs everywhere Neovim runs.
@@ -239,39 +249,6 @@ local builtin_plugins = {
             return require("plugins.configs.cmp")
         end,
     },
-    -- Copilot plugins
-    {
-        "zbirenbaum/copilot-cmp",
-        dependencies = {
-            "zbirenbaum/copilot.lua",
-            cmd = "Copilot",
-            build = ":Copilot auth",
-            event = "InsertEnter",
-            opts = {
-                suggestion = { enabled = false }, -- Disable standalone Copilot (let cmp handle it)
-                panel = { enabled = false },
-            },
-        },
-        opts = {},
-        config = function()
-            require("copilot").setup({})
-            require("copilot_cmp").setup({})
-        end,
-        lazy = true,
-    },
-    {
-        "CopilotC-Nvim/CopilotChat.nvim",
-        dependencies = {
-            { "zbirenbaum/copilot.lua" },
-            { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-        },
-        build = "make tiktoken", -- Only on MacOS or Linux
-        opts = {
-            -- See Configuration section for options
-            model = "claude-3.5-sonnet",
-        },
-        lazy = true,
-    },
     -- Colorizer
     {
         "norcalli/nvim-colorizer.lua",
@@ -319,7 +296,7 @@ require("lazy").setup({
         -- install missing plugins on startup
         missing = true,
         -- try to load one of these colorschemes when starting an installation during startup
-        colorscheme = { "rose-pine", "habamax" },
+        colorscheme = { "tokyonight" },
     },
     checker = {
         -- automatically check for plugin updates
