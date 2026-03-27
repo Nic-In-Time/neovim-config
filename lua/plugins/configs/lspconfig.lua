@@ -22,6 +22,7 @@ local server_configs = {
     vimls = {},
     yamlls = {},
     ty = {},
+    jdtls = {},
     lua_ls = {
         settings = {
             Lua = {
