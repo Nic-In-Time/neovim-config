@@ -22,7 +22,22 @@ local server_configs = {
     vimls = {},
     yamlls = {},
     ty = {},
-    jdtls = {},
+    jdtls = {
+        config = {
+            capabilities = {
+                workspace = {
+                    configuration = true,
+                },
+                textDocument = {
+                    completion = {
+                        completionItem = {
+                            snippentSupport = true,
+                        },
+                    },
+                },
+            },
+        },
+    },
     lua_ls = {
         settings = {
             Lua = {
