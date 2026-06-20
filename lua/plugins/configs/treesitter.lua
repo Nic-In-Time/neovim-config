@@ -28,6 +28,7 @@ return {
     "vim",
     "lua",
     "qml_language_server",
+    "rust_analyzer",
   }, custom_ensure_installed),
 
   highlight = {
